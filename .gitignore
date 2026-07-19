@@ -1,0 +1,16 @@
+# Credenciais do Google
+*.json
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Ambiente virtual
+venv/
+.venv/
+
+# Arquivos do VS Code
+.vscode/
+
+# Arquivos do Windows
+Thumbs.db

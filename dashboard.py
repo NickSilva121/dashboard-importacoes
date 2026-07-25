@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import gspread
+import os
 from google.oauth2.service_account import Credentials
 
 # ======================================================
@@ -24,10 +25,18 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-creds = Credentials.from_service_account_file(
-    "tough-plate-354500-7526720d6b28.json",
-    scopes=SCOPES
-)
+if os.path.exists("tough-plate-354500-7526720d6b28.json"):
+    # Executando localmente
+    creds = Credentials.from_service_account_file(
+        "tough-plate-354500-7526720d6b28.json",
+        scopes=SCOPES
+    )
+else:
+    # Executando no Streamlit Cloud
+    creds = Credentials.from_service_account_info(
+        dict(st.secrets["gcp_service_account"]),
+        scopes=SCOPES
+    )
 
 client = gspread.authorize(creds)
 

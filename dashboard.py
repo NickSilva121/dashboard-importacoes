@@ -3,6 +3,7 @@ import pandas as pd
 import gspread
 import os
 from google.oauth2.service_account import Credentials
+from PIL import Image
 
 # ======================================================
 # CONFIGURAÇÃO DA PÁGINA
@@ -76,6 +77,13 @@ for coluna in colunas_data:
 # ======================================================
 # SIDEBAR
 # ======================================================
+
+logo = Image.open("logo.jpg")
+
+st.sidebar.image(
+    logo,
+    use_container_width=True
+)
 
 st.sidebar.title("🔎 Filtros")
 

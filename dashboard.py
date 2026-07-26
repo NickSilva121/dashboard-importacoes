@@ -78,7 +78,7 @@ for coluna in colunas_data:
 # SIDEBAR
 # ======================================================
 
-logo = Image.open("logo.jpg")
+logo = Image.open("logo.jpeg")
 
 st.sidebar.image(
     logo,

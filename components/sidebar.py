@@ -8,7 +8,7 @@ def show():
     with st.sidebar:
 
         # Logo
-        st.image("logo.jpeg", use_container_width=True)
+        st.image("logo.png", use_container_width=True)
 
         st.divider()
 

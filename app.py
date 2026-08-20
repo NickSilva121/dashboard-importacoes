@@ -17,7 +17,7 @@ st.set_page_config(
 
 if not usuario_logado():
 
-    st.title("🔐 Sistema de Importações")
+    st.title("🔐 Follow Up de Importações")
 
     st.write("Faça login para continuar.")
 

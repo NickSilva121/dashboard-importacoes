@@ -21,19 +21,26 @@ if not usuario_logado():
 
     st.write("Faça login para continuar.")
 
-    usuario = st.text_input("Usuário")
+    with st.form("login_form"):
 
-    senha = st.text_input(
-        "Senha",
-        type="password"
-    )
+        usuario = st.text_input("Usuário")
 
-    if st.button("Entrar", use_container_width=True):
+        senha = st.text_input(
+            "Senha",
+            type="password"
+        )
+
+        entrar = st.form_submit_button(
+            "Entrar",
+            use_container_width=True
+        )
+
+    if entrar:
 
         if login(usuario, senha):
             st.rerun()
-
-        st.error("Usuário ou senha inválidos.")
+        else:
+            st.error("Usuário ou senha inválidos.")
 
     st.stop()
 

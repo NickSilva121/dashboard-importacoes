@@ -82,7 +82,7 @@ def show():
 
     arquivo = st.file_uploader(
         "Selecione uma planilha Excel",
-        type=["xlsx"]
+        type=["xlsx","xlsm"]
     )
 
     if arquivo is not None:

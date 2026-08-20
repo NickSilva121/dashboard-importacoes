@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st  # type: ignore[import-not-found]
 
 from auth import login, logout, usuario_logado
 from components.sidebar import show as sidebar

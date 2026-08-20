@@ -90,7 +90,7 @@ def show():
         try:
 
             # Lê o Excel
-            df = pd.read_excel(arquivo)
+            df = pd.read_excel(arquivo, engine="openpyxl")
 
             # Remove espaços dos nomes das colunas
             df.columns = df.columns.str.strip()

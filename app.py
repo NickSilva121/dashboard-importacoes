@@ -23,11 +23,12 @@ if not usuario_logado():
 
     with st.form("login_form"):
 
-        usuario = st.text_input("Usuário")
+        usuario = st.text_input("Usuário", autocomplete="username")
 
         senha = st.text_input(
             "Senha",
-            type="password"
+            type="password",
+            autocomplete="password"
         )
 
         entrar = st.form_submit_button(

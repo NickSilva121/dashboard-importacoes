@@ -1,4 +1,4 @@
-import streamlit as st  # type: ignore[import-not-found]
+import streamlit as st
 import pandas as pd
 import gspread
 import os
@@ -33,6 +33,7 @@ def show():
 
     df = pd.DataFrame(dados)
 
+    df = df.fillna("-")
     # ======================================================
     # TRATAMENTO DAS DATAS
     # ======================================================

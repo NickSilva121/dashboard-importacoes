@@ -85,7 +85,6 @@ def show():
     type=[
         "xlsx",
         "xlsm",
-        "application/vnd.ms-excel.sheet.macroEnabled.12"
     ])
 
     if arquivo is not None:

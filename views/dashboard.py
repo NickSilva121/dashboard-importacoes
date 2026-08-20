@@ -16,7 +16,7 @@ def show():
         st.error("Você não possui permissão para acessar esta página.")
         st.stop()
 
-    st.title("📦 Dashboard de Importações")
+    st.title("📦 Follow Up de Importações")
 
     # ======================================================
     # GOOGLE SHEETS

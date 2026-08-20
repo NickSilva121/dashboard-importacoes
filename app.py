@@ -43,7 +43,7 @@ if not usuario_logado():
 
 pagina = sidebar()
 
-if pagina == "📊 Dashboard":
+if pagina == "📊 Follow Up":
     dashboard.show()
 
 elif pagina == "📤 Upload":

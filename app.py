@@ -6,7 +6,7 @@ from views import dashboard
 from views import upload
 
 st.set_page_config(
-    page_title="Sistema de Importações",
+    page_title="Follow Up de Importações Kyly",
     page_icon="📦",
     layout="wide"
 )

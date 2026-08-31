@@ -1,13 +1,16 @@
 import streamlit as st
 import pandas as pd
-import gspread
-import os
-from google.oauth2.service_account import Credentials
-from PIL import Image
+
 from sheets import conectar_planilha
 from auth import usuario_logado, perfil
 
+
 def show():
+
+    # ======================================================
+    # AUTENTICAÇÃO
+    # ======================================================
+
     if not usuario_logado():
         st.warning("Faça login para acessar esta página.")
         st.stop()
@@ -15,6 +18,10 @@ def show():
     if perfil() not in ["admin", "dashboard"]:
         st.error("Você não possui permissão para acessar esta página.")
         st.stop()
+
+    # ======================================================
+    # TÍTULO
+    # ======================================================
 
     st.title("📦 Follow Up de Importações")
 
@@ -33,7 +40,6 @@ def show():
 
     df = pd.DataFrame(dados)
 
-    df = df.fillna("-")
     # ======================================================
     # TRATAMENTO DAS DATAS
     # ======================================================
@@ -54,7 +60,13 @@ def show():
                 df[coluna],
                 errors="coerce",
                 dayfirst=True
-            ).dt.date
+            ).dt.strftime("%d/%m/%Y")
+
+    # ======================================================
+    # CAMPOS VAZIOS
+    # ======================================================
+
+    df = df.fillna("-")
 
     # ======================================================
     # SIDEBAR
@@ -62,21 +74,39 @@ def show():
 
     st.sidebar.title("🔎 Filtros")
 
-    # Comprador
-    compradores = sorted(df["COMPRADOR"].dropna().unique())
+    # ======================================================
+    # FILTRO - COMPRADOR
+    # ======================================================
 
-    comprador = st.sidebar.selectbox(
-        "Comprador",
-        ["Todos"] + list(compradores)
-    )
+    if "COMPRADOR" in df.columns:
 
-    # REF PO
+        compradores = sorted(
+            df["COMPRADOR"]
+            .dropna()
+            .astype(str)
+            .unique()
+        )
+
+        comprador = st.sidebar.selectbox(
+            "Comprador",
+            ["Todos"] + list(compradores)
+        )
+
+    else:
+
+        comprador = "Todos"
+
+    # ======================================================
+    # FILTRO - REF PO
+    # ======================================================
 
     ref_po = st.sidebar.text_input(
         "Referência PO"
     )
 
-    # Datas
+    # ======================================================
+    # FILTROS - DATAS
+    # ======================================================
 
     prontidao = st.sidebar.date_input(
         "Prontidão",
@@ -99,13 +129,21 @@ def show():
 
     filtro = df.copy()
 
-    if comprador != "Todos":
+    # ------------------------------------------------------
+    # Comprador
+    # ------------------------------------------------------
+
+    if comprador != "Todos" and "COMPRADOR" in filtro.columns:
 
         filtro = filtro[
             filtro["COMPRADOR"] == comprador
         ]
 
-    if ref_po:
+    # ------------------------------------------------------
+    # Referência PO
+    # ------------------------------------------------------
+
+    if ref_po and "REF PO" in filtro.columns:
 
         filtro = filtro[
             filtro["REF PO"]
@@ -117,37 +155,65 @@ def show():
             )
         ]
 
-    if prontidao:
+    # ------------------------------------------------------
+    # Prontidão
+    # ------------------------------------------------------
+
+    if prontidao and "PRONTIDÃO" in filtro.columns:
+
+        data_filtro = prontidao.strftime("%d/%m/%Y")
 
         filtro = filtro[
-            filtro["PRONTIDÃO"] == prontidao
+            filtro["PRONTIDÃO"] == data_filtro
         ]
 
-    if chegada:
+    # ------------------------------------------------------
+    # Chegada
+    # ------------------------------------------------------
+
+    if chegada and "CHEGADA" in filtro.columns:
+
+        data_filtro = chegada.strftime("%d/%m/%Y")
 
         filtro = filtro[
-            filtro["CHEGADA"] == chegada
+            filtro["CHEGADA"] == data_filtro
         ]
 
-    if entrega:
+    # ------------------------------------------------------
+    # Entrega
+    # ------------------------------------------------------
+
+    if entrega and "ENTREGA" in filtro.columns:
+
+        data_filtro = entrega.strftime("%d/%m/%Y")
 
         filtro = filtro[
-            filtro["ENTREGA"] == entrega
+            filtro["ENTREGA"] == data_filtro
         ]
 
     # ======================================================
     # PROCESSOS
     # ======================================================
 
-    status = filtro["STATUS"].astype(str).str.upper()
+    if "STATUS" in filtro.columns:
 
-    processos_finalizados = filtro[
-        status.str.contains("FINAL")
-    ]
+        status = filtro["STATUS"].astype(str).str.upper()
 
-    processos_andamento = filtro[
-        ~status.str.contains("FINAL")
-    ]
+        processos_finalizados = filtro[
+            status.str.contains("FINAL", na=False)
+        ]
+
+        processos_andamento = filtro[
+            ~status.str.contains("FINAL", na=False)
+        ]
+
+    else:
+
+        processos_finalizados = pd.DataFrame(
+            columns=filtro.columns
+        )
+
+        processos_andamento = filtro.copy()
 
     # ======================================================
     # INDICADORES
@@ -181,6 +247,10 @@ def show():
         "✅ Processos finalizados"
     ])
 
+    # ======================================================
+    # PROCESSOS EM ANDAMENTO
+    # ======================================================
+
     with aba1:
 
         st.dataframe(
@@ -188,6 +258,10 @@ def show():
             use_container_width=True,
             hide_index=True
         )
+
+    # ======================================================
+    # PROCESSOS FINALIZADOS
+    # ======================================================
 
     with aba2:
 

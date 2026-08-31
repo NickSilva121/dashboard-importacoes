@@ -69,6 +69,53 @@ def show():
     df = df.fillna("-")
 
     # ======================================================
+    # FORMATAÇÃO DO VALOR FOB
+    # ======================================================
+
+    if "VALOR FOB" in df.columns:
+
+        def formatar_valor_fob(valor):
+
+            if valor == "-" or valor == "":
+                return "-"
+
+            try:
+                # Trata valores que possam vir no formato brasileiro
+                valor_str = str(valor).strip()
+
+                # Se tiver ponto e vírgula, assume formato brasileiro
+                # Exemplo: 1.500,50
+                if "." in valor_str and "," in valor_str:
+                    valor_str = valor_str.replace(".", "")
+                    valor_str = valor_str.replace(",", ".")
+
+                # Se tiver apenas vírgula
+                # Exemplo: 1500,50
+                elif "," in valor_str:
+                    valor_str = valor_str.replace(",", ".")
+
+                numero = float(valor_str)
+
+                # Formato brasileiro
+                valor_formatado = f"{numero:,.2f}"
+
+                valor_formatado = (
+                    valor_formatado
+                    .replace(",", "X")
+                    .replace(".", ",")
+                    .replace("X", ".")
+                )
+
+                return f"US$ {valor_formatado}"
+
+            except (ValueError, TypeError):
+                return str(valor)
+
+        df["VALOR FOB"] = df["VALOR FOB"].apply(
+            formatar_valor_fob
+        )
+
+    # ======================================================
     # SIDEBAR
     # ======================================================
 

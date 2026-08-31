@@ -41,6 +41,16 @@ def show():
     df = pd.DataFrame(dados)
 
     # ======================================================
+    # REMOVE COLUNAS SEM NOME
+    # Exemplo: Unnamed: 22
+    # ======================================================
+
+    df = df.loc[
+        :,
+        ~df.columns.astype(str).str.startswith("Unnamed")
+    ]
+
+    # ======================================================
     # TRATAMENTO DAS DATAS
     # ======================================================
 
@@ -80,18 +90,18 @@ def show():
                 return "-"
 
             try:
-                # Trata valores que possam vir no formato brasileiro
+
                 valor_str = str(valor).strip()
 
-                # Se tiver ponto e vírgula, assume formato brasileiro
                 # Exemplo: 1.500,50
                 if "." in valor_str and "," in valor_str:
+
                     valor_str = valor_str.replace(".", "")
                     valor_str = valor_str.replace(",", ".")
 
-                # Se tiver apenas vírgula
                 # Exemplo: 1500,50
                 elif "," in valor_str:
+
                     valor_str = valor_str.replace(",", ".")
 
                 numero = float(valor_str)
@@ -109,6 +119,7 @@ def show():
                 return f"US$ {valor_formatado}"
 
             except (ValueError, TypeError):
+
                 return str(valor)
 
         df["VALOR FOB"] = df["VALOR FOB"].apply(
@@ -208,7 +219,9 @@ def show():
 
     if prontidao and "PRONTIDÃO" in filtro.columns:
 
-        data_filtro = prontidao.strftime("%d/%m/%Y")
+        data_filtro = prontidao.strftime(
+            "%d/%m/%Y"
+        )
 
         filtro = filtro[
             filtro["PRONTIDÃO"] == data_filtro
@@ -220,7 +233,9 @@ def show():
 
     if chegada and "CHEGADA" in filtro.columns:
 
-        data_filtro = chegada.strftime("%d/%m/%Y")
+        data_filtro = chegada.strftime(
+            "%d/%m/%Y"
+        )
 
         filtro = filtro[
             filtro["CHEGADA"] == data_filtro
@@ -232,7 +247,9 @@ def show():
 
     if entrega and "ENTREGA" in filtro.columns:
 
-        data_filtro = entrega.strftime("%d/%m/%Y")
+        data_filtro = entrega.strftime(
+            "%d/%m/%Y"
+        )
 
         filtro = filtro[
             filtro["ENTREGA"] == data_filtro
@@ -247,11 +264,17 @@ def show():
         status = filtro["STATUS"].astype(str).str.upper()
 
         processos_finalizados = filtro[
-            status.str.contains("FINAL", na=False)
+            status.str.contains(
+                "FINAL",
+                na=False
+            )
         ]
 
         processos_andamento = filtro[
-            ~status.str.contains("FINAL", na=False)
+            ~status.str.contains(
+                "FINAL",
+                na=False
+            )
         ]
 
     else:
